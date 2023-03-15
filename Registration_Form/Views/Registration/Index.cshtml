@@ -1,0 +1,63 @@
+﻿@model Registration_Form.Models.Person
+
+@{
+    ViewData["Title"] = "Registration";
+    //Layout = null;
+}
+<link href="~/css/registration.css" type="text/css" rel="stylesheet" />
+
+
+<div class="registrationForm">
+    <div class="form-box">
+        <h1>Sign Up</h1>
+
+        <form id="registrationForm" name="registrationForm" method="post" enctype="multipart/form-data">
+            <div class="input-group">
+                <div class="input-field">
+                    <input type="text" asp-for="FirstName" name="FirstName" placeholder="First Name" />
+                </div>
+
+                <div class="input-field">
+                    <input type="text" asp-for="LastName" name="LastName" placeholder="Last Name" />
+                </div>
+
+                <div class="input-field">
+                    <input type="email" asp-for="Email" placeholder="example@gmail.com" />
+                </div>
+
+                <div class="input-field">
+                    Gender:
+                    <label>Male</label>
+                    <input type="radio" asp-for="Gender" value="Male" />
+                    <label>Female</label>
+                    <input type="radio" asp-for="Gender" value="Female" />
+                    <label>Other</label>
+                    <input type="radio" asp-for="Gender" value="Other" />
+                </div>
+
+                <div class="input-field">
+                    Subscribe me:
+                    <input type="checkbox" asp-action="SubscribeMe" />
+                </div>
+
+                <div class="input-field">
+                    Country:
+                    <select asp-for="Country">
+                        <option>Bulgaria</option>
+                        <option>Italy</option>
+                        <option>Spain</option>
+                    </select>
+                </div>
+
+                <div class="input-field">
+                    Photo:
+                    <input type="file" asp-for="Photo" />
+                </div>
+
+                <div class="btn-field">
+                    <button type="submit">Sign up</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
