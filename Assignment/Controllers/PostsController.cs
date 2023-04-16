@@ -7,41 +7,66 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Assignment.Data;
 using Assignment.Models;
-using Assignment.Services;
 using Microsoft.Extensions.Hosting;
+using Assignment.Services.Interfaces;
 
 namespace Assignment.Controllers
 {
     public class PostsController : Controller
     {
-        private readonly DbPosts _context;
-        private readonly IPostService _postService;
-        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly DbPosts context;
+        private readonly IPostService postService;
 
-        public PostsController(DbPosts context, IPostService postService, IWebHostEnvironment hostEnvironment)
+        public PostsController(DbPosts context, IPostService postService)
         {
-            _context = context;
-            _postService = postService;
-            _hostEnvironment = hostEnvironment;
+            this.context = context;
+            this.postService = postService;
         }
 
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-              return _context.Post != null ? 
-                          View(await _context.Post.ToListAsync()) :
-                          Problem("Entity set 'DbPosts.Post'  is null.");
+            if (context.Post != null)
+            {
+                var posts = from p in context.Post
+                            select p;
+
+                return View(await posts.OrderByDescending(p => p.DateAdded).ToListAsync());
+            }
+
+            else
+            {
+                return Problem("Entity set 'DbPosts.Post' is null.");
+            }
+        }
+
+        public async Task<IActionResult> IndexFiltered(string comment)
+        {
+            var posts = from p in context.Post
+                       select p;
+
+            if (comment == null || context.Post == null)
+            {
+                return NotFound();
+            }
+
+            if (!String.IsNullOrEmpty(comment))
+            {
+                posts = posts.Where(p => p.Comment == comment);
+            }
+
+            return View(await posts.ToListAsync());
         }
 
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Post == null)
+            if (id == null || context.Post == null)
             {
                 return NotFound();
             }
 
-            var post = await _context.Post
+            var post = await context.Post
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (post == null)
             {
@@ -66,33 +91,23 @@ namespace Assignment.Controllers
         {
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _hostEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(post.Image.FileName);
-                string extension = Path.GetExtension(post.Image.FileName);
-                post.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine(wwwRootPath + "/images/", fileName);
-                using (var fileStream = new FileStream(path, FileMode.Create))
-                {
-                    await post.Image.CopyToAsync(fileStream);
-                }
+                await postService.AddPost(post);
 
-                post.DateAdded = DateTime.Now;
-                _context.Add(post);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(post);
         }
 
         // GET: Posts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Post == null)
+            if (id == null || context.Post == null)
             {
                 return NotFound();
             }
 
-            var post = await _context.Post.FindAsync(id);
+            var post = await context.Post.FindAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -116,8 +131,7 @@ namespace Assignment.Controllers
             {
                 try
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
+                    await postService.EditPost(post);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -138,12 +152,12 @@ namespace Assignment.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Post == null)
+            if (id == null || context.Post == null)
             {
                 return NotFound();
             }
 
-            var post = await _context.Post
+            var post = await context.Post
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (post == null)
             {
@@ -158,23 +172,19 @@ namespace Assignment.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Post == null)
+            if (context.Post == null)
             {
                 return Problem("Entity set 'DbPosts.Post'  is null.");
             }
-            var post = await _context.Post.FindAsync(id);
-            if (post != null)
-            {
-                _context.Post.Remove(post);
-            }
-            
-            await _context.SaveChangesAsync();
+
+            await postService.DeletePost(id);
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool PostExists(int id)
         {
-          return (_context.Post?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (context.Post?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                <a href="url">@Html.DisplayFor(modelItem => item.Comment)</a>
+                <a asp-action="IndexFiltered" asp-route-comment="@item.Comment">@Html.DisplayFor(modelItem => item.Comment)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateAdded)

@@ -1,5 +1,6 @@
 using Assignment.Data;
 using Assignment.Services;
+using Assignment.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
