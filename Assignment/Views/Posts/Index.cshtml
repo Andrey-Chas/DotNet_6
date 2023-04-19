@@ -3,13 +3,31 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Index</h1>
+<!-- Page Header Start -->
+<div class="container py-5 px-2 bg-white">
+    <div class="row py-5 px-4">
+        <div class="col-sm-6 text-center text-md-left">
+            <h1 class="mb-3 mb-md-0 text-black text-uppercase font-weight-bold">Posts</h1>
+            <p>
+                <a asp-action="Create">Create New</a>
+            </p>
+        </div>
+        <div class="col-sm-6 text-center text-md-right">
+            <div class="d-inline-flex pt-2">
+                <h4 class="m-0 text-black"><a class="text-black" asp-area="" asp-controller="Home" asp-action="Index">Home</a></h4>
+                <h4 class="m-0 text-black px-2">/</h4>
+                <h4 class="m-0 text-black">Posts</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+@*<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+</p>*@
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -31,29 +49,56 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <img decoding="async" src="@("~/images/" + item.ImageName)" asp-append-version="true" width="250px" height="250px" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuthorName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="IndexFiltered" asp-route-comment="@item.Comment">@Html.DisplayFor(modelItem => item.Comment)</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateAdded)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img decoding="async" src="@("~/images/" + item.ImageName)" asp-append-version="true" width="250px" height="250px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AuthorName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a asp-action="IndexFiltered" asp-route-comment="@item.Comment">@Html.DisplayFor(modelItem => item.Comment)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateAdded)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
-</table>
+</table>*@
+
+<!-- Blog List Start -->
+@foreach (var item in Model)
+{
+    <div class="container bg-white pt-5">
+        <div class="row blog-item px-3 pb-5">
+            <div class="col-md-5">
+                <img decoding="async" src="@("~/images/" + item.ImageName)" asp-append-version="true" width="300px" height="300px">
+            </div>
+            <div class="col-md-7">
+                <h3 class="mt-md-4 px-md-3 mb-2 py-2 bg-white font-weight-bold">Author: @Html.DisplayFor(modelItem => item.AuthorName)</h3>
+                <div class="d-flex mb-3">
+                    <small class="mr-2 text-muted"><i class="fa fa-calendar-alt"></i> @Html.DisplayFor(modelItem => item.DateAdded)</small>
+                    <small class="mr-2 text-muted"><i class="fa fa-tag"></i><a asp-action="IndexFiltered" asp-route-comment="@item.Comment"> @Html.DisplayFor(modelItem => item.Comment)</a></small>
+                    <small class="mr-2 text-muted"><i class="fa fa-envelope"></i> @Html.DisplayFor(modelItem => item.Email)</small>
+                </div>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </div>
+                <a class="btn btn-link p-0" asp-action="Details" asp-route-id="@item.Id">Details <i class="fa fa-angle-right"></i></a>
+            </div>
+        </div>
+    </div>
+}
+<!-- Blog List End -->
