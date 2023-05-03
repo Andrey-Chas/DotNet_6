@@ -29,6 +29,18 @@ namespace Assignment.Services
                 await post.Image.CopyToAsync(fileStream);
             }
 
+            var hastag = post.Comment;
+
+            if (hastag[0] == '#')
+            {
+                post.Comment = hastag;
+            }
+            else
+            {
+                hastag = '#' + hastag;
+                post.Comment = hastag;
+            }
+
             post.DateAdded = DateTime.Now;
             context.Add(post);
             await context.SaveChangesAsync();
@@ -62,6 +74,18 @@ namespace Assignment.Services
             using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 await post.Image.CopyToAsync(fileStream);
+            }
+
+            var hastag = post.Comment;
+
+            if (hastag[0] == '#')
+            {
+                post.Comment = hastag;
+            }
+            else
+            {
+                hastag = '#' + hastag;
+                post.Comment = hastag;
             }
 
             post.DateAdded = DateTime.Now;

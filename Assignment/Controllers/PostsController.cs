@@ -24,12 +24,19 @@ namespace Assignment.Controllers
         }
 
         // GET: Posts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             if (context.Post != null)
             {
                 var posts = from p in context.Post
                             select p;
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    posts = posts.Where(p => p.AuthorName != null && p.AuthorName.Contains(searchString));
+
+                    await posts.ToListAsync();
+                }
 
                 return View(await posts.OrderByDescending(p => p.DateAdded).ToListAsync());
             }

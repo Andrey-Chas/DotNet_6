@@ -9,7 +9,10 @@
         <div class="col-sm-6 text-center text-md-left">
             <h1 class="mb-3 mb-md-0 text-black text-uppercase font-weight-bold">Posts</h1>
             <p>
-                <a asp-action="Create">Create New</a>
+                @if (Model.Count() != 0)
+                {
+                    <a asp-action="Create">Create New</a>
+                }
             </p>
         </div>
         <div class="col-sm-6 text-center text-md-right">
@@ -18,6 +21,12 @@
                 <h4 class="m-0 text-black px-2">/</h4>
                 <h4 class="m-0 text-black">Posts</h4>
             </div>
+            <form asp-controller="Posts" asp-action="Index">
+                <div class="input-group mb-3">
+                    <input type="text" name="searchString" placeholder="Search" class="mb-3 mb-md-0 form-control" />
+                    <input type="submit" value="Search" class="btn btn-primary" />
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -78,6 +87,16 @@
 </table>*@
 
 <!-- Blog List Start -->
+@if (Model.Count() == 0)
+{
+    <div class="container bg-white pt-5">
+        <div class="text-center">
+            <p>No existing posts.</p>
+            <a asp-action="Create"><b>Start creating!</b></a>
+        </div>
+        <br />
+    </div>
+}
 @foreach (var item in Model)
 {
     <div class="container bg-white pt-5">
